@@ -12,7 +12,7 @@ function exportArchiveToCSVTable(archive) {
     const csvTable = [];
     // Extract JSON object representations of all entries
     archive.getGroups()
-        .forEach(group => extractGroupEntries(group))
+        .map(group => extractGroupEntries(group))
         .forEach(extractedEntries => {
             entries.push(...extractedEntries);
         });
@@ -31,6 +31,7 @@ function exportArchiveToCSVTable(archive) {
     entries.forEach(entry => {
         csvTable.push(tableHeadings.map(headingKey => entry[headingKey] || ""));
     });
+    return csvTable;
 }
 
 function extractGroupEntries(group) {
