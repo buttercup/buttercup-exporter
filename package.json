@@ -1,0 +1,45 @@
+{
+  "name": "@buttercup/exporter",
+  "version": "0.0.0",
+  "description": "Export Buttercup vaults",
+  "main": "source/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npm run test:unit",
+    "test:unit": "nyc mocha -r test/index.js 'test/**/*.spec.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/buttercup/buttercup-exporter.git"
+  },
+  "keywords": [
+    "export",
+    "buttercup",
+    "vault",
+    "archive",
+    "csv"
+  ],
+  "author": "Perry Mitchell <perry@perrymitchell.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/buttercup/buttercup-exporter/issues"
+  },
+  "homepage": "https://github.com/buttercup/buttercup-exporter#readme",
+  "dependencies": {
+    "csv-stringify": "^3.1.1",
+    "pify": "^3.0.0"
+  },
+  "devDependencies": {
+    "buttercup": "^2.2.0",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2",
+    "sinon": "^6.1.4"
+  },
+  "peerDependencies": {
+    "buttercup": "2.*"
+  }
+}
