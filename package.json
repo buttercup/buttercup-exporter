@@ -1,6 +1,6 @@
 {
   "name": "@buttercup/exporter",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Export Buttercup vaults",
   "main": "source/index.js",
   "directories": {
