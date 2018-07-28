@@ -11,7 +11,8 @@ function exportArchiveToCSVTable(archive) {
     const usedKeys = [];
     const csvTable = [];
     // Extract JSON object representations of all entries
-    archive.getGroups()
+    archive
+        .getGroups()
         .map(group => extractGroupEntries(group))
         .forEach(extractedEntries => {
             entries.push(...extractedEntries);
@@ -35,15 +36,13 @@ function exportArchiveToCSVTable(archive) {
 }
 
 function extractGroupEntries(group) {
-    const items = group.getEntries().map(entry => Object.assign(
-        {},
-        entry.toObject().properties,
-        {
+    const items = group.getEntries().map(entry =>
+        Object.assign({}, entry.toObject().properties, {
             "!group_id": group.id,
             "!group_name": group.getTitle(),
             id: entry.id
-        }
-    ));
+        })
+    );
     group.getGroups().forEach(subGroup => {
         items.push(...extractGroupEntries(subGroup));
     });
