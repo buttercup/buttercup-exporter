@@ -37,7 +37,7 @@ function exportArchiveToCSVTable(archive) {
 function extractGroupEntries(group) {
     const items = group.getEntries().map(entry => Object.assign(
         {},
-        entry.toObject().properties || {},
+        entry.toObject().properties,
         {
             "!group_id": group.id,
             "!group_name": group.getTitle(),
