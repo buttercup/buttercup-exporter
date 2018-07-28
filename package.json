@@ -7,9 +7,18 @@
     "test": "test"
   },
   "scripts": {
-    "test": "run-s test:unit test:coverage",
+    "format": "prettier --write '{source,test}/**/*.js'",
+    "precommit": "lint-staged",
+    "test": "run-s test:unit test:coverage test:format",
     "test:coverage": "nyc check-coverage --lines 100 --functions 100 --branches 100 --statements 100",
+    "test:format": "prettier-check '{source,test}/**/*.js'",
     "test:unit": "nyc mocha -r test/index.js 'test/**/*.spec.js'"
+  },
+  "lint-staged": {
+    "{source,test}/**/*.js": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -30,7 +39,11 @@
   "homepage": "https://github.com/buttercup/buttercup-exporter#readme",
   "dependencies": {
     "csv-stringify": "^3.1.1",
-    "pify": "^3.0.0"
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.0",
+    "pify": "^3.0.0",
+    "prettier": "^1.13.7",
+    "prettier-check": "^2.0.0"
   },
   "devDependencies": {
     "buttercup": "^2.2.0",
