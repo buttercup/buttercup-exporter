@@ -1,12 +1,12 @@
-const { Archive } = require("buttercup");
+const { Vault } = require("buttercup");
 const csvjson = require("csvjson");
-const { exportArchiveToCSV, exportArchiveToCSVTable } = require("../source/index.js");
+const { exportVaultToCSV, exportVaultToCSVTable } = require("../source/index.js");
 
 const UUID_REXP = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
 
 function setup() {
-    const archive = (this.archive = new Archive());
-    const mailGroup = archive.createGroup("Mail");
+    const vault = (this.vault = new Vault());
+    const mailGroup = vault.createGroup("Mail");
     mailGroup
         .createEntry("Hotmail")
         .setProperty("username", "test@hotmail.com")
@@ -25,7 +25,7 @@ function setup() {
         .setProperty("password", "passw0rd");
 }
 
-describe("exportArchiveToCSV", function() {
+describe("exportVaultToCSV", function() {
     beforeEach(function() {
         setup.call(this);
     });
@@ -35,13 +35,13 @@ describe("exportArchiveToCSV", function() {
         // - 3 lines for entries
         // - 1 line for heading
         // - 1 line for trailing line-ending
-        return expect(exportArchiveToCSV(this.archive)).to.eventually.satisfy(
+        return expect(exportVaultToCSV(this.vault)).to.eventually.satisfy(
             csv => csv.split("\n").length === 5
         );
     });
 
     it("contains titles, usernames and passwords of entries", function() {
-        return exportArchiveToCSV(this.archive).then(output => {
+        return exportVaultToCSV(this.vault).then(output => {
             const items = csvjson.toSchemaObject(output);
             items.forEach(item => {
                 expect(item)
@@ -58,7 +58,7 @@ describe("exportArchiveToCSV", function() {
     });
 
     it("contains entry IDs", function() {
-        return exportArchiveToCSV(this.archive).then(output => {
+        return exportVaultToCSV(this.vault).then(output => {
             const items = csvjson.toSchemaObject(output);
             items.forEach(item => {
                 expect(item)
@@ -69,7 +69,7 @@ describe("exportArchiveToCSV", function() {
     });
 
     it("contains group IDs and titles", function() {
-        return exportArchiveToCSV(this.archive).then(output => {
+        return exportVaultToCSV(this.vault).then(output => {
             const items = csvjson.toSchemaObject(output);
             items.forEach(item => {
                 expect(item)
@@ -83,18 +83,18 @@ describe("exportArchiveToCSV", function() {
     });
 });
 
-describe("exportArchiveToCSVTable", function() {
+describe("exportVaultToCSVTable", function() {
     beforeEach(function() {
         setup.call(this);
     });
 
     it("outputs an array", function() {
-        const output = exportArchiveToCSVTable(this.archive);
+        const output = exportVaultToCSVTable(this.vault);
         expect(output).to.be.an("array");
     });
 
     it("contains the correct number of lines", function() {
-        const output = exportArchiveToCSVTable(this.archive);
+        const output = exportVaultToCSVTable(this.vault);
         expect(output).to.have.lengthOf(3 + 1); // 3 entries, 1 heading
     });
 });

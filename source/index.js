@@ -1,17 +1,20 @@
 const csvStringify = require("csv-stringify");
 const pify = require("pify");
+const { createEntryFacade, init } = require("buttercup");
 
-function exportArchiveToCSV(archive) {
-    const data = exportArchiveToCSVTable(archive);
+function exportVaultToCSV(vault) {
+    const data = exportVaultToCSVTable(vault);
     return pify(csvStringify)(data);
 }
 
-function exportArchiveToCSVTable(archive) {
+function exportVaultToCSVTable(vault) {
+    // Init Buttercup
+    init();
     const entries = [];
     const usedKeys = [];
     const csvTable = [];
     // Extract JSON object representations of all entries
-    archive
+    vault
         .getGroups()
         .map(group => extractGroupEntries(group))
         .forEach(extractedEntries => {
@@ -36,13 +39,19 @@ function exportArchiveToCSVTable(archive) {
 }
 
 function extractGroupEntries(group) {
-    const items = group.getEntries().map(entry =>
-        Object.assign({}, entry.toObject().properties, {
+    const items = group.getEntries().map(entry => {
+        const props = createEntryFacade(entry).fields.reduce((output, field) => {
+            if (field.propertyType === "property") {
+                output[field.property] = field.value;
+            }
+            return output;
+        }, {});
+        return Object.assign({}, props, {
             "!group_id": group.id,
             "!group_name": group.getTitle(),
             id: entry.id
-        })
-    );
+        });
+    });
     group.getGroups().forEach(subGroup => {
         items.push(...extractGroupEntries(subGroup));
     });
@@ -50,6 +59,6 @@ function extractGroupEntries(group) {
 }
 
 module.exports = {
-    exportArchiveToCSV,
-    exportArchiveToCSVTable
+    exportVaultToCSV,
+    exportVaultToCSVTable
 };
