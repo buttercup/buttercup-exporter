@@ -31,12 +31,13 @@ describe("exportVaultToCSV", function() {
     });
 
     it("contains the correct number of lines", function() {
-        // 5 lines expected:
+        // 7 lines expected:
         // - 3 lines for entries
         // - 1 line for heading
+        // - 2 lines for groups
         // - 1 line for trailing line-ending
         return expect(exportVaultToCSV(this.vault)).to.eventually.satisfy(
-            csv => csv.split("\n").length === 5
+            csv => csv.split("\n").length === 7
         );
     });
 
@@ -61,6 +62,7 @@ describe("exportVaultToCSV", function() {
         return exportVaultToCSV(this.vault).then(output => {
             const items = csvjson.toSchemaObject(output);
             items.forEach(item => {
+                if (item["!type"] !== "entry") return;
                 expect(item)
                     .to.have.property("id")
                     .that.matches(UUID_REXP);
@@ -95,6 +97,6 @@ describe("exportVaultToCSVTable", function() {
 
     it("contains the correct number of lines", function() {
         const output = exportVaultToCSVTable(this.vault);
-        expect(output).to.have.lengthOf(3 + 1); // 3 entries, 1 heading
+        expect(output).to.have.lengthOf(3 + 2 + 1); // 3 entries, 2 groups, 1 heading
     });
 });
