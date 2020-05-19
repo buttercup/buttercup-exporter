@@ -86,9 +86,9 @@ describe("exportVaultToCSV", function() {
 
     it("contains group hierarchy", function() {
         return exportVaultToCSV(this.vault).then(output => {
-            const items = csvjson.toSchemaObject(output).map(item =>
-                `${item["!type"]} ${item["!group_name"]}`
-            );
+            const items = csvjson
+                .toSchemaObject(output)
+                .map(item => `${item["!type"]} ${item["!group_name"]}`);
             expect(items).to.contain("group Mail");
             expect(items).to.contain("group General");
         });

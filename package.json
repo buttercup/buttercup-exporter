@@ -8,7 +8,6 @@
   },
   "scripts": {
     "format": "prettier --write '{source,test}/**/*.js'",
-    "precommit": "lint-staged",
     "test": "run-s test:unit test:coverage test:format",
     "test:coverage": "nyc check-coverage --lines 100 --functions 100 --branches 100 --statements 100",
     "test:format": "prettier-check '{source,test}/**/*.js'",
@@ -19,6 +18,11 @@
       "prettier --write",
       "git add"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "repository": {
     "type": "git",
