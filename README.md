@@ -12,6 +12,8 @@ Install by running the following:
 npm install @buttercup/exporter --save
 ```
 
+Requires NodeJS 10 or later.
+
 ## Usage
 Require the exporter method and pass an archive instance to it:
 
