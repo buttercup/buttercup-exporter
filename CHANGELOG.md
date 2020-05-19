@@ -1,5 +1,11 @@
 # Buttercup Exporter Changelog
 
+## v1.0.0
+_2020-05-19_
+
+ * New export format
+ * Group hierarchy
+
 ## v0.1.0
 _2018-07-28_
 
