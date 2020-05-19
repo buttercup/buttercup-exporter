@@ -37,24 +37,18 @@ function exportVaultToCSVTable(vault) {
         });
     });
     // Create table header
-    const tableHeadings = [...SYSTEM_HEADINGS, ...usedKeys.filter(prop => SYSTEM_HEADINGS.includes(prop) === false)];
-    csvTable.push([
-        "!type",
-        ...tableHeadings
-    ]);
+    const tableHeadings = [
+        ...SYSTEM_HEADINGS,
+        ...usedKeys.filter(prop => SYSTEM_HEADINGS.includes(prop) === false)
+    ];
+    csvTable.push(["!type", ...tableHeadings]);
     // Add all groups
     groups.forEach(group => {
-        csvTable.push([
-            "group",
-            ...tableHeadings.map(headingKey => group[headingKey] || "")
-        ]);
+        csvTable.push(["group", ...tableHeadings.map(headingKey => group[headingKey] || "")]);
     });
     // Add all entries
     entries.forEach(entry => {
-        csvTable.push([
-            "entry",
-            ...tableHeadings.map(headingKey => entry[headingKey] || "")
-        ]);
+        csvTable.push(["entry", ...tableHeadings.map(headingKey => entry[headingKey] || "")]);
     });
     return csvTable;
 }
@@ -65,12 +59,12 @@ function extractGroups(group) {
         {
             "!group_id": group.id,
             "!group_name": group.getTitle(),
-            "!group_parent": parent && parent.id || "0",
+            "!group_parent": (parent && parent.id) || "0"
         },
-        ...group.getGroups().map(sub => extractGroups(sub)).reduce((output, result) => [
-            ...output,
-            ...result
-        ], [])
+        ...group
+            .getGroups()
+            .map(sub => extractGroups(sub))
+            .reduce((output, result) => [...output, ...result], [])
     ];
 }
 
