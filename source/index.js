@@ -1,21 +1,32 @@
 const csvStringify = require("csv-stringify");
 const pify = require("pify");
+const { createEntryFacade, init } = require("buttercup");
 
-function exportArchiveToCSV(archive) {
-    const data = exportArchiveToCSVTable(archive);
+const SYSTEM_HEADINGS = ["!group_id", "!group_name", "!group_parent"];
+
+function exportVaultToCSV(vault) {
+    const data = exportVaultToCSVTable(vault);
     return pify(csvStringify)(data);
 }
 
-function exportArchiveToCSVTable(archive) {
+function exportVaultToCSVTable(vault) {
+    // Init Buttercup
+    init();
+    const groups = [];
     const entries = [];
     const usedKeys = [];
     const csvTable = [];
     // Extract JSON object representations of all entries
-    archive
-        .getGroups()
+    const rootGroups = vault.getGroups();
+    rootGroups
         .map(group => extractGroupEntries(group))
         .forEach(extractedEntries => {
             entries.push(...extractedEntries);
+        });
+    rootGroups
+        .map(group => extractGroups(group))
+        .forEach(extractedGroups => {
+            groups.push(...extractedGroups);
         });
     // Record every used key
     entries.forEach(entry => {
@@ -26,23 +37,52 @@ function exportArchiveToCSVTable(archive) {
         });
     });
     // Create table header
-    const tableHeadings = ["!group_id", "!group_name", ...usedKeys];
-    csvTable.push(tableHeadings);
+    const tableHeadings = [
+        ...SYSTEM_HEADINGS,
+        ...usedKeys.filter(prop => SYSTEM_HEADINGS.includes(prop) === false)
+    ];
+    csvTable.push(["!type", ...tableHeadings]);
+    // Add all groups
+    groups.forEach(group => {
+        csvTable.push(["group", ...tableHeadings.map(headingKey => group[headingKey] || "")]);
+    });
     // Add all entries
     entries.forEach(entry => {
-        csvTable.push(tableHeadings.map(headingKey => entry[headingKey] || ""));
+        csvTable.push(["entry", ...tableHeadings.map(headingKey => entry[headingKey] || "")]);
     });
     return csvTable;
 }
 
-function extractGroupEntries(group) {
-    const items = group.getEntries().map(entry =>
-        Object.assign({}, entry.toObject().properties, {
+function extractGroups(group) {
+    const parent = group.getParentGroup();
+    return [
+        {
             "!group_id": group.id,
             "!group_name": group.getTitle(),
+            "!group_parent": (parent && parent.id) || "0"
+        },
+        ...group
+            .getGroups()
+            .map(sub => extractGroups(sub))
+            .reduce((output, result) => [...output, ...result], [])
+    ];
+}
+
+function extractGroupEntries(group) {
+    const items = group.getEntries().map(entry => {
+        const props = createEntryFacade(entry).fields.reduce((output, field) => {
+            if (field.propertyType === "property") {
+                output[field.property] = field.value;
+            }
+            return output;
+        }, {});
+        return Object.assign({}, props, {
+            "!group_id": group.id,
+            "!group_name": "",
+            "!group_parent": "",
             id: entry.id
-        })
-    );
+        });
+    });
     group.getGroups().forEach(subGroup => {
         items.push(...extractGroupEntries(subGroup));
     });
@@ -50,6 +90,6 @@ function extractGroupEntries(group) {
 }
 
 module.exports = {
-    exportArchiveToCSV,
-    exportArchiveToCSVTable
+    exportVaultToCSV,
+    exportVaultToCSVTable
 };
