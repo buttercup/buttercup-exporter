@@ -20,7 +20,7 @@ Require the exporter method and pass an archive instance to it:
 ```javascript
 const fs = require("fs");
 const { Archive } = require("buttercup");
-const { exportArchiveToCSV } = require("@buttercup/exporter");
+const { exportVaultToCSV } = require("@buttercup/exporter");
 
 const archive = new Archive();
 archive.createGroup("General")
@@ -28,9 +28,9 @@ archive.createGroup("General")
         .setProperty("username", "test@mail.com")
         .setProperty("password", "passw0rd");
 
-exportArchiveToCSV(archive).then(csv => {
+exportVaultToCSV(archive).then(csv => {
     fs.writeFileSync("./test.csv", csv);
 });
 ```
 
-`exportArchiveToCSV` takes the archive instance as the only parameter and returns a `Promise`.
+`exportVaultToCSV` takes the vault instance as the only parameter and returns a `Promise`.
