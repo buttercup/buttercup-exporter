@@ -1,6 +1,6 @@
 const csvStringify = require("csv-stringify");
 const pify = require("pify");
-const { createEntryFacade, init } = require("buttercup");
+const { createEntryFacade } = require("buttercup");
 
 const SYSTEM_HEADINGS = ["!group_id", "!group_name", "!group_parent"];
 
@@ -11,7 +11,6 @@ function exportVaultToCSV(vault) {
 
 function exportVaultToCSVTable(vault) {
     // Init Buttercup
-    init();
     const groups = [];
     const entries = [];
     const usedKeys = [];
