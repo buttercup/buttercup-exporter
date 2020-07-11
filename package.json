@@ -45,7 +45,7 @@
     "pify": "^5.0.0"
   },
   "devDependencies": {
-    "buttercup": "^4.9.1",
+    "buttercup": "^4.9.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "csvjson": "^5.1.0",
